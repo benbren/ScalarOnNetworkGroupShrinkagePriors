@@ -53,7 +53,7 @@ generate_network_data <- function(p,
     ob_ntwrk[lower.tri(ob_ntwrk)] <- t(x_i)
     diag(ob_ntwrk) <- 0
     
-    y_i <- t(beta_with_indices$beta)%*%ob_ntwrk[lower.tri(ob_ntwrk)] + rnorm(1,mean = 0, sd = sigma2_beta) 
+    y_i <- t(beta_with_indices$beta)%*%ob_ntwrk[lower.tri(ob_ntwrk)] + rnorm(1,mean = 0, sd = sqrt(sigma2_beta))
     # 
     y <- c(y, y_i)
     

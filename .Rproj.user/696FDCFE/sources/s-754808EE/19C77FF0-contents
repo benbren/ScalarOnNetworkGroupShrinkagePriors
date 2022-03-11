@@ -5,7 +5,7 @@ rinvgamma <- function(n,a,b){
 }
 
 
-get_posteriors <- function(p, n, burn_ins, posterior_draws = 100, prob_zero = 0.9, 
+group_horseshoe_gibs <- function(p, n, burn_ins, posterior_draws = 100, prob_zero = 0.9, 
                            debug = F,
                            update = "all",
                            show = F,
@@ -25,6 +25,11 @@ get_posteriors <- function(p, n, burn_ins, posterior_draws = 100, prob_zero = 0.
   iterations <- burn_ins + posterior_draws
   it <- 0
   beta_mat <- NULL
+  sigma_vec <- NULL
+  gam_j_vec <- NULL 
+  gam_k_vec <- NULL 
+  tau_vec <- NULL 
+  lam_vec <- 
   X <- NULL 
   for (i in 1:n){
     X <- rbind(X, dat$ntwrks[[i]][lower.tri(dat$ntwrks[[i]])])
@@ -150,8 +155,15 @@ get_posteriors <- function(p, n, burn_ins, posterior_draws = 100, prob_zero = 0.
     }
     print(paste("it:", it))
     
-    
-    beta_mat <- cbind(beta_mat, betas$values)
+    if(it > burn_ins){
+      beta_mat <- cbind(beta_mat, betas$values)
+      lam_vec <- cbind(lam_vec, params$lam_value)
+      gam_j_vec <- cbind(gam_j_vec, params$gam_j_value)
+      gam_k_vec <- cbind(gam_k_vec,params$gam_k_value)
+      tau_vec <- c(tau_vec, tau2)
+      sigma_vec <- c(sigma_vec, sigma2)
+    }
+
     it <- it + 1
     
     
@@ -159,7 +171,12 @@ get_posteriors <- function(p, n, burn_ins, posterior_draws = 100, prob_zero = 0.
   
   posterior_pe <- rowMeans(beta_mat)
   
-  return(list(real_dat = dat, posterior_draws = beta_mat, posterior_point_estimates = posterior_pe, 
-         sigma2 = sigma2, hypers = params))
+  return(list(real_dat = dat, posterior_draws_beta = beta_mat, 
+              posterior_pe = posterior_pe, 
+         posterior_draws_lam = lam_vec, 
+         posterior_draws_gam_j = gam_j_vec,
+         posterior_draws_gam_k = gam_k_vec, 
+         posterior_draws_tau = tau_vec, 
+         posterior_draws_sigma = sigma_vec))
 }
 
