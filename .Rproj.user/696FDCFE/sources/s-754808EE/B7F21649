@@ -1,0 +1,27 @@
+{
+    "id": "B7F21649",
+    "path": "~/Desktop/ScalarOnNetworkShrinkagePrior/generate_sim_data.R",
+    "project_path": "generate_sim_data.R",
+    "type": "r_source",
+    "hash": "2157262752",
+    "contents": "",
+    "dirty": false,
+    "created": 1644786658648.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "71,0",
+        "scrollLine": "46"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1646955933,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1646955933846,
+    "read_only": false,
+    "read_only_alternatives": []
+}
