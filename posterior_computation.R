@@ -10,10 +10,7 @@ get_posteriors <- function(p, n, burn_ins, posterior_draws = 100, prob_zero = 0.
                            update = "all",
                            show = F,
                            show_params = F
-                           ){ # add if statements to see if we update a parameter 
-  # i.e. just update parameters individually with logical 
-  # set up initial values for parameters that are not being updated ^^^
-  # gen just make function more flexible 
+                           ){ 
   
   q = p*(p-1)/2
   dat <- generate_network_data(p = p, n = n, prop_zero = prob_zero)
@@ -166,18 +163,3 @@ get_posteriors <- function(p, n, burn_ins, posterior_draws = 100, prob_zero = 0.
          sigma2 = sigma2, hypers = params))
 }
 
-
-
-
-# TODO : Run linear regression on the generated
-
-
-# This shoudl be the main component drives the results 
-# Need to fix sigma 2 at the true value and update the betas 
-# We want to set the hyperparameters at very large values (100,000)
-
-
-
-# Local shrinkage parameters should get very small for signals, large for non-signals 
-# (might even think about fixing the global shrinkage parameter to 1)
-# Set sigma2 to the true value 
