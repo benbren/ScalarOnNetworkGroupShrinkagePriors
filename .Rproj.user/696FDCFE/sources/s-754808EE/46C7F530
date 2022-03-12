@@ -1,0 +1,28 @@
+{
+    "id": "46C7F530",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1647114547562.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "id": "ddf943ae7c7b441c9e65aea129fdf4c4",
+        "name": "beta_g[22, 1000]",
+        "title": "beta_g[22, 1000]",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 140296910332656,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1647114547562,
+    "read_only": false,
+    "read_only_alternatives": []
+}
