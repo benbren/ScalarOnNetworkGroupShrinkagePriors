@@ -1,9 +1,10 @@
 plot_posteriors <- function(simulation){
   signals <- sim$real_dat$signal 
+  p <- max(signals$j)
   draws <- dim(sim$posterior_draws_beta)[2]
   beta_g <- cbind(sim$posterior_draws_beta, signals) %>% 
     rbind(c(rep(NA,draws),0,1,1,0)) %>%
-    rbind(c(rep(NA,draws),0,7,7,0)) %>% 
+    rbind(c(rep(NA,draws),0,p,p,0)) %>% 
             as.tbl() %>% 
     pivot_longer(-c(signal,j,k,beta), values_to = "posterior_draws") %>% 
     ggplot(aes(x = posterior_draws, color = as.factor(signal))) + geom_density() + facet_grid(j ~ k) + 
@@ -12,7 +13,7 @@ plot_posteriors <- function(simulation){
   
   lam_g <- cbind(sim$posterior_draws_lam, signals) %>%
     rbind(c(rep(NA,draws),0,1,1,0)) %>%
-    rbind(c(rep(NA,draws),0,7,7,0)) %>% 
+    rbind(c(rep(NA,draws),0,p,p,0)) %>% 
     as.tbl() %>% 
     pivot_longer(-c(signal,j,k,beta), values_to = "posterior_draws") %>% 
     ggplot(aes(x = posterior_draws, color = as.factor(signal))) + geom_density() + facet_grid(j ~ k) + 
@@ -21,7 +22,7 @@ plot_posteriors <- function(simulation){
   
   gam_g <- cbind(sim$posterior_draws_gam_j, signals) %>%
     rbind(c(rep(NA,draws),0,1,1,0)) %>%
-    rbind(c(rep(NA,draws),0,7,7,0)) %>% 
+    rbind(c(rep(NA,draws),0,p,p,0)) %>% 
     as.tbl() %>% 
     pivot_longer(-c(signal,j,k,beta), values_to = "posterior_draws") %>% 
     mutate(edge = paste0(j,", ", k)) %>% 

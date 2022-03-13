@@ -5,19 +5,32 @@ rinvgamma <- function(n,a,b){
 }
 
 
-group_horseshoe_gibs <- function(p, n, burn_ins, posterior_draws = 100, prob_zero = 0.9, 
+group_horseshoe_gibs <- function(p, n, burn_ins, posterior_draws = 100, 
                            debug = F,
                            update = "all",
                            show = F,
-                           show_params = F
+                           show_params = F,
+                           sigma2_beta = 2,
+                           prop_zero = 0.8,
+                           beta_mean = 5,
+                           beta_sd = 0.01,
+                           x_cor = 0.5,
+                           x_sigma = 1,
+                           init_beta = 0
                            ){ 
   
   q = p*(p-1)/2
-  dat <- generate_network_data(p = p, n = n, prop_zero = prob_zero)
+  dat <- generate_network_data(p = p, n = n,
+                               sigma2_beta = sigma2_beta,
+                               prop_zero = prop_zero,
+                               beta_mean = beta_mean,
+                               beta_sd = beta_sd,
+                               x_cor = x_cor,
+                               x_sigma = x_sigma)
   gam <- data.frame(gam_value = rep(1,p), j = 1:p, a_gam = 1, k = 1:p)
   lambda <- data.frame(lam_value = rep(1, q), j = dat$signal$j, k = dat$signal$k, a_lam = 1)
   sigma2 <- 1
-  betas <- data.frame(values  = rep(0, q),  j = dat$signal$j, k = dat$signal$k)
+  betas <- data.frame(values  = rep(init_beta, q),  j = dat$signal$j, k = dat$signal$k)
   if(debug){
     betas$values = dat$signal$beta
   }
