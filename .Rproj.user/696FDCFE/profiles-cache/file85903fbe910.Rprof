@@ -1,0 +1,18 @@
+memory profiling: GC profiling: line profiling: sample.interval=10000
+#File 1: <expr>
+:1534199:11437781:118641712:984:"MASS::mvrnorm" 1#62 "profvis" 
+:1534249:11554123:118650280:8:"MASS::mvrnorm" 1#62 "profvis" 
+:1534277:11891696:118660304:3:"profvis" 
+:1534277:11891696:118660304:0:"profvis" 
+:1543503:11997538:120354976:692:"getInlineInfo" "tryInline" "cmpCall" "cmp" "cmpForBody" "h" "tryInline" "cmpCall" "cmp" "genCode" "compile" "compiler:::tryCompile" 1#63 "profvis" 
+:1552537:12001845:123105192:776:"checkCall" "cmpCall" "cmp" "cmpIndices" "cmpSubsetDispatch" "h" "tryInline" "cmpCall" "cmp" "cmpBuiltinArgs" "h" "tryInline" "cmpCall" "cmp" "cmpPrim2" "h" "tryInline" "cmpCall" "cmp" "cmpSymbolAssign" "h" "tryInline" "cmpCall" "cmp" "h" "tryInline" "cmpCall" "cmp" "cmpForBody" "h" "tryInline" "cmpCall" "cmp" "genCode" "compile" "compiler:::tryCompile" 1#63 "profvis" 
+:1561628:12131446:125265840:708:"profvis" 
+:1569006:12463755:126883288:646:"lower.tri" 1#67 "profvis" 
+:1575565:12765497:128316552:574:"lower.tri" 1#67 "profvis" 
+:1580977:13018359:129493728:474:"profvis" 
+:1586901:13302480:130789120:518:1#70 "profvis" 
+:1592257:13563027:131958176:469:"profvis" 
+:1599560:13927793:133557424:637:"upper.tri" 1#66 "profvis" 
+:1608501:14382746:135507568:784:"profvis" 
+:1618501:14908375:137692072:875:"profvis" 
+:1629548:15507381:140106680:966:1#74 "profvis" 
