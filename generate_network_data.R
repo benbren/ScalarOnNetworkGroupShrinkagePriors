@@ -17,7 +17,7 @@ generate_network_data <- function(p,
     adjm <- matrix(NA,p,p)
     true_signals <- matrix(sample(0:1,q , replace = T, prob = c(prop_zero,1-prop_zero)))
     adjm[lower.tri(adjm)] <- true_signals
-    adjm[upper.tri(adjm)] <- t(true_signals)
+    adjm[upper.tri(adjm)] <- t(adjm)[upper.tri(adjm)]
     diag(adjm) <- 0
     
     ntwrk <- igraph::graph_from_adjacency_matrix(adjm,
@@ -76,8 +76,8 @@ generate_network_data <- function(p,
   for (i in 1:n){
     x_i <- x[i,]
     ob_ntwrk <- matrix(NA,p,p)
-    ob_ntwrk[upper.tri(ob_ntwrk)] <- x_i
-    ob_ntwrk[lower.tri(ob_ntwrk)] <- t(x_i)
+    ob_ntwrk[lower.tri(ob_ntwrk)] <- x_i
+    ob_ntwrk[upper.tri(ob_ntwrk)] <- t(ob_ntwrk)[upper.tri(ob_ntwrk)]
     diag(ob_ntwrk) <- 0
     
     y_i <- t(beta_with_indices$beta)%*%ob_ntwrk[lower.tri(ob_ntwrk)] + rnorm(1,mean = 0, sd = sqrt(sigma2_beta))
@@ -89,7 +89,7 @@ generate_network_data <- function(p,
   }
   
   rtrn <- list(outcomes = y, signal = beta_with_indices, ntworkslt = observed_networkslt,
-               p = p, n = n, full_ntwork = ntwrk)
+               p = p, n = n, full_ntwork = ntwrk, adjm = adjm)
   #})
   return(rtrn)
   
