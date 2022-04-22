@@ -6,26 +6,26 @@ rinvgamma <- function(n, a, b) {
 
 
 group_horseshoe_gibs <- function(burn_ins,
-                                 posterior_draws ,
-                                 dat = NULL,
-                                 p = 5,
-                                 n = 1000,
-                                 debug = F,
-                                 update = "all",
-                                 show = F,
-                                 show_params = F,
-                                 generate = T,
-                                 sigma2_beta = 2,
-                                 prop_zero = 0.8,
-                                 beta_mean = 5,
-                                 beta_sd = 0.01,
-                                 x_cor = 0.5,
-                                 x_sigma = 1,
-                                 init_beta = 0,
-                                 ungroup = F,
-                                 beta_hubs = F,
-                                 hub_nodes = NULL,
-                                 hub_degrees = NULL) {
+                                    posterior_draws ,
+                                    dat = NULL,
+                                    p = 5,
+                                    n = 1000,
+                                    debug = F,
+                                    update = "all",
+                                    show = F,
+                                    show_params = F,
+                                    generate = T,
+                                    sigma2_beta = 2,
+                                    prop_zero = 0.8,
+                                    beta_mean = 5,
+                                    beta_sd = 0.01,
+                                    x_cor = 0.5,
+                                    x_sigma = 1,
+                                    init_beta = 0,
+                                    ungroup = F,
+                                    beta_hubs = F,
+                                    hub_nodes = NULL,
+                                    hub_degrees = NULL) {
   if (!is.null(dat)) {
     generate <- F
   }
@@ -55,7 +55,7 @@ group_horseshoe_gibs <- function(burn_ins,
   
   q = p * (p - 1) / 2
   
-  profvis::profvis({
+  #system.time({
   gam <-
     data.frame(
       gam_value = rep(1, p),
@@ -89,12 +89,13 @@ group_horseshoe_gibs <- function(burn_ins,
   gam_k_vec <- NULL
   tau_vec <- NULL
   lam_vec <-
-  X <- NULL
-for (i in 1:n) {
+    X <- NULL
+  for (i in 1:n) {
     X <- rbind(X, dat$ntworkslt[[i]])
   }
-
-
+  
+  
+  XtX <- crossprod(X)  
   
   while (it < iterations + 1) {
     ### Updating Hyperparameters ####
@@ -158,9 +159,7 @@ for (i in 1:n) {
     }
     
     if ("gamma" %in% update | update == "all") {
-      # if(ungroup){
-      #   next
-      # }
+      
       for (node in 1:p) {
         k_dat <- params %>% filter(k == node | j == node) %>%
           rowwise() %>%
@@ -189,20 +188,9 @@ for (i in 1:n) {
     }
     
     if ("lambda" %in% update | update == "all") {
-      for (np in 1:q) {
-        j_np <- params$j[np]
-        k_np <- params$k[np]
-        idx <- lambda$j == j_np & lambda$k == k_np
 
-
-        lambda$lam_value[idx] <-
-          rinvgamma(1, 1, 1 / params$a_lam[np] + params$values[np] ^ 2 / (
-            2 * (sigma2 * tau2 * params$gam_k_value[np] * params$gam_j_value[np])
-          ))
-      # }
-      
-      #lambda$lam_value <- rinvgamma(q,rep(1,q), 1 / params$a_lam + params$values ^ 2 / (
-               #2 * (sigma2 * tau2 * params$gam_k_value * params$gam_j_value)))
+      lambda$lam_value <- rinvgamma(q,rep(1,q), 1 / params$a_lam + params$values ^ 2 / (
+        2 * (sigma2 * tau2 * params$gam_k_value * params$gam_j_value)))
     }
     
     
@@ -239,31 +227,28 @@ for (i in 1:n) {
       }
     }
     
-    A <- t(X) %*% X + inv_lam
+    A <- XtX + inv_lam   
     
-
-    
-    # Ainv <- solve(A, tol = 1e-26)
     if ("betas" %in% update | update == "all") {
       R <- chol(A)
-      mu <- t(X)%*%dat$outcomes
-      b <- solve(t(R))%*%mu
+      #mu <- t(X)%*%dat$outcomes
+      mu <- crossprod(X,dat$outcomes)
+      #b <- solve(t(R))%*%mu
+      b <- backsolve(R,mu,transpose=TRUE)
       z <- rnorm(q,0,sqrt(sigma2))
-      
-      #betas$values <-
-        #MASS::mvrnorm(1, Ainv %*% t(X) %*% dat$outcomes, sigma2 * Ainv)
-      betas$values <- solve(R)%*%(z + b)
 
+      betas$values <- backsolve(R,z + b)
+      
     }
     print(paste("iteration:", it))
     
     if (it > burn_ins) {
       beta_mat <- cbind(beta_mat, betas$values)
-      #lam_vec <- cbind(lam_vec, params$lam_value)
-      #gam_j_vec <- cbind(gam_j_vec, params$gam_j_value)
-      #gam_k_vec <- cbind(gam_k_vec, params$gam_k_value)
-      #tau_vec <- c(tau_vec, tau2)
-      #sigma_vec <- c(sigma_vec, sigma2)
+      lam_vec <- cbind(lam_vec, params$lam_value)
+      gam_j_vec <- cbind(gam_j_vec, params$gam_j_value)
+      gam_k_vec <- cbind(gam_k_vec, params$gam_k_value)
+      tau_vec <- c(tau_vec, tau2)
+      sigma_vec <- c(sigma_vec, sigma2)
     }
     
     it <- it + 1
@@ -277,19 +262,19 @@ for (i in 1:n) {
   
   preds <- X %*% posterior_pe
   
-  })
+  #})
   
   return(
     list(
       real_dat = dat,
-      #posterior_draws_beta = beta_mat,
+      posterior_draws_beta = beta_mat,
       posterior_pe = posterior_pe,
       posterior_se = posterior_se,
-      #posterior_draws_lam = lam_vec,
-      #posterior_draws_gam_j = gam_j_vec,
-      #posterior_draws_gam_k = gam_k_vec,
-      #posterior_draws_tau = tau_vec,
-      #posterior_draws_sigma = sigma_vec,
+      posterior_draws_lam = lam_vec,
+      posterior_draws_gam_j = gam_j_vec,
+      posterior_draws_gam_k = gam_k_vec,
+      posterior_draws_tau = tau_vec,
+      posterior_draws_sigma = sigma_vec,
       predictions = preds,
       burn_ins = burn_ins, 
       posterior_draws = posterior_draws
