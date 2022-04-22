@@ -36,13 +36,11 @@ large_n_small_p_data_hub <- generate_network_data(small_p,large_n,sigma2_beta = 
 
 ghs_small_n_small_p_data_no_hub <- group_horseshoe_gibs(burnins,draws, dat = small_n_small_p_data_no_hub)
 ghs_large_n_small_p_data_no_hub <- group_horseshoe_gibs(burnins,draws, dat = large_n_small_p_data_no_hub)
-ghs_small_n_large_p_data_no_hub <- group_horseshoe_gibs(burnins,draws, dat = small_n_large_p_data_no_hub)
-ghs_large_n_large_p_data_no_hub <- group_horseshoe_gibs(burnins,draws, dat = large_n_large_p_data_no_hub)
+
 
 ghs_small_n_small_p_data_hub <- group_horseshoe_gibs(burnins,draws, dat = small_n_small_p_data_hub)
 ghs_large_n_small_p_data_hub <- group_horseshoe_gibs(burnins,draws, dat = large_n_small_p_data_hub)
-ghs_small_n_large_p_data_hub <- group_horseshoe_gibs(burnins,draws, dat = small_n_large_p_data_hub)
-ghs_large_n_large_p_data_hub <- group_horseshoe_gibs(burnins,draws, dat = large_n_large_p_data_hub)
+
 # ---
 # Compare Small p data =========================================================================================================
 # --- 
@@ -120,7 +118,10 @@ small_n_large_p_data_hub <- generate_network_data(large_p,small_n,sigma2_beta = 
 large_n_large_p_data_hub <- generate_network_data(large_p,large_n,sigma2_beta = sqrt(15), prop_zero = 0.8,
                                                   beta_hubs = T, hub_nodes = large_nodes, hub_degrees = large_degrees)
 
-
+ghs_small_n_large_p_data_no_hub <- group_horseshoe_gibs(burnins,draws, dat = small_n_large_p_data_no_hub)
+ghs_large_n_large_p_data_no_hub <- group_horseshoe_gibs(burnins,draws, dat = large_n_large_p_data_no_hub)
+ghs_small_n_large_p_data_hub <- group_horseshoe_gibs(burnins,draws, dat = small_n_large_p_data_hub)
+ghs_large_n_large_p_data_hub <- group_horseshoe_gibs(burnins,draws, dat = large_n_large_p_data_hub)
 # ---
 # Compare Large p Data =========================================================================================================
 # --- 
