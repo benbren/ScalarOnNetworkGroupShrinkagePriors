@@ -1,6 +1,6 @@
 generate_network_data <- function(p, 
                                   n,
-                                  sigma2_beta = 2,
+                                  r2,
                                   prop_zero = 0.8,
                                   beta_mean = 5,
                                   beta_sd = 0.01,
@@ -44,7 +44,8 @@ generate_network_data <- function(p,
     true_signals <-  adjm[lower.tri(adjm)]
     diag(adjm) <- 0 
     
-    ntwrk <- igraph::graph_from_adjacency_matrix(adjm,mode="undirected")
+    ntwrk <- igraph::graph_from_adjacency_matrix(adjm,
+                                                 mode="undirected")
   }
   
   i <- 2
@@ -79,17 +80,23 @@ generate_network_data <- function(p,
     ob_ntwrk[lower.tri(ob_ntwrk)] <- x_i
     ob_ntwrk[upper.tri(ob_ntwrk)] <- t(ob_ntwrk)[upper.tri(ob_ntwrk)]
     diag(ob_ntwrk) <- 0
-    
-    y_i <- t(beta_with_indices$beta)%*%ob_ntwrk[lower.tri(ob_ntwrk)] + rnorm(1,mean = 0, sd = sqrt(sigma2_beta))
-    # 
-    y <- c(y, y_i)
-    
     observed_networkslt[[i]] <- ob_ntwrk[lower.tri(ob_ntwrk)] # make sure this matches indices!! 
     observed_networks[[i]] <- ob_ntwrk # make sure this matches indices!! 
   }
   
+  X <- NULL   
+  for (i in 1:n) {
+    X <- rbind(X, observed_networkslt[[i]])
+  }
+  xb <- X %*% beta_with_indices$beta
+  vxb <- var(X %*% beta_with_indices$beta)
+  noise <- ((1-r2) / r2)*vxb
+  
+  y <- xb + rnorm(n,0,sqrt(noise))
+  
+  
   rtrn <- list(outcomes = y, signal = beta_with_indices, ntworkslt = observed_networkslt,
-               p = p, n = n, full_ntwork = ntwrk, adjm = adjm)
+               p = p, n = n, full_ntwork = ntwrk, adjm = adjm, noise = noise)
   #})
   return(rtrn)
   
