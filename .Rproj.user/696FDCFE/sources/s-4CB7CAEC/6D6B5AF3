@@ -1,0 +1,27 @@
+{
+    "id": "6D6B5AF3",
+    "path": "~/Dropbox (University of Michigan)/Research/Dissertation Work/ScalarOnNetworkShrinkagePrior/generate_network_data.R",
+    "project_path": "generate_network_data.R",
+    "type": "r_source",
+    "hash": "1145829447",
+    "contents": "",
+    "dirty": false,
+    "created": 1647729667487.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "163,83",
+        "scrollLine": "147"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1653425901,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1653425901822,
+    "read_only": false,
+    "read_only_alternatives": []
+}

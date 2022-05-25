@@ -1,1 +1,0 @@
-seer_data <- readxl::read_excel("~/Dropbox (University of Michigan)/SEER 18 Inclusive (1).xlsx")

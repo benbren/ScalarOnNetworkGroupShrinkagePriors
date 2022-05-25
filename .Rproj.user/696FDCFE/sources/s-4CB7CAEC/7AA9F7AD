@@ -1,0 +1,26 @@
+{
+    "id": "7AA9F7AD",
+    "path": "~/Downloads/posterior_computation_JK.R",
+    "project_path": null,
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1650291723026.0,
+    "source_on_save": false,
+    "relative_order": 8,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "91,0",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1651505261,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1651505261263,
+    "read_only": false,
+    "read_only_alternatives": []
+}
