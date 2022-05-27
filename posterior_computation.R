@@ -365,7 +365,7 @@ group_horseshoe_gibs_groups <- function(burn_ins,
         # posterior of a_gamma_j is invgamma(1, 1 + 1/gamma_j^2)
         gam$a_gam[group] <- rinvgamma(1, 1, 1 + 1 / gam$gam_value[group])
         if (ungroup) {
-          gam$a_gam[node] <- 1
+          gam$a_gam[group] <- 1
         }
 
       }
@@ -413,11 +413,12 @@ group_horseshoe_gibs_groups <- function(burn_ins,
         denom <- sum(k_dat$denom_piece)
         
         # posterior for gamma_k is invgamma(m_k + 1 / 2, 1/a_k + 1/2sigma^2tau^2)
-        gam$gam_value[gam$k == node] <-
-          rinvgamma(1, p / 2, (1 / a_k) + denom / (2 * sigma2 * tau2))
+        gam$gam_value[gam$group == i] <-
+          rinvgamma(1,
+                    (nrow(k_dat) + 1)/ 2, (1 / a_k) + denom / (2 * sigma2 * tau2))
         
         if (ungroup) {
-          gam$gam_value[gam$k == node] <- 1
+          gam$gam_value[gam$k == i] <- 1
         }
       } 
     }
