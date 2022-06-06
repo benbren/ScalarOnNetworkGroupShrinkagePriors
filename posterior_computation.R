@@ -333,8 +333,7 @@ group_horseshoe_gibs_groups <- function(burn_ins,
   it <- 0
   beta_mat <- NULL
   sigma_vec <- NULL
-  gam_j_vec <- NULL
-  gam_k_vec <- NULL
+  gam_vec <- NULL
   tau_vec <- NULL
   lam_vec <- NULL
   X <- NULL
@@ -408,7 +407,7 @@ group_horseshoe_gibs_groups <- function(burn_ins,
           mutate(denom_piece = (values ^ 2) / (lam_value))
         
         a_k <-
-          gam %>% filter(group == 1) %>% select(a_gam) %>% unlist()
+          gam %>% filter(group == i) %>% select(a_gam) %>% unlist()
         
         denom <- sum(k_dat$denom_piece)
         
@@ -418,7 +417,7 @@ group_horseshoe_gibs_groups <- function(burn_ins,
                     (nrow(k_dat) + 1)/ 2, (1 / a_k) + denom / (2 * sigma2 * tau2))
         
         if (ungroup) {
-          gam$gam_value[gam$k == i] <- 1
+          gam$gam_value[gam$group == i] <- 1
         }
       } 
     }
@@ -477,11 +476,11 @@ group_horseshoe_gibs_groups <- function(burn_ins,
     if (it > burn_ins) {
       beta_mat <- cbind(beta_mat, betas$values)
       lam_vec <- cbind(lam_vec, params$lam_value)
-      gam_j_vec <- cbind(gam_j_vec, params$gam_j_value)
-      gam_k_vec <- cbind(gam_k_vec, params$gam_k_value)
+      gam_vec <- cbind(gam_vec, params$gam_value)
       tau_vec <- c(tau_vec, tau2)
       sigma_vec <- c(sigma_vec, sigma2)
     }
+
     
     it <- it + 1
     
@@ -502,13 +501,13 @@ group_horseshoe_gibs_groups <- function(burn_ins,
       posterior_pe = posterior_pe,
       posterior_se = posterior_se,
       posterior_draws_lam = lam_vec,
-      posterior_draws_gam_j = gam_j_vec,
-      posterior_draws_gam_k = gam_k_vec,
+      posterior_draws_gam = gam_vec,
       posterior_draws_tau = tau_vec,
       posterior_draws_sigma = sigma_vec,
       predictions = preds,
       burn_ins = burn_ins, 
-      posterior_draws = posterior_draws
+      posterior_draws = posterior_draws,
+      params = params
     )
   )
 }
