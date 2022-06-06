@@ -442,9 +442,9 @@ group_horseshoe_gibs_groups <- function(burn_ins,
     
     LAMBDA_diag <-
       params %>% rowwise() %>% mutate(diag_el = gam_value * lam_value) %>% select(diag_el) %>% unlist()
-    lam <- diag(1, q)
-    diag(lam) <- LAMBDA_diag
-    inv_lam <- solve(tau2 * lam, tol = 1e-26)
+    inv_lam <- diag(1, q)
+    diag(inv_lam) <- 1/(tau2*LAMBDA_diag)
+    #inv_lam <- solve(tau2 * lam, tol = 1e-26)
     
     
     err = dat$outcomes - xb
