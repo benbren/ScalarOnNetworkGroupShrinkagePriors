@@ -9,6 +9,7 @@ bayesian_variable_selection <- function(ghs_model, alpha, delta = NULL){
   ps <- rowMeans(abs(ghs_model$posterior_draws_beta) > delta)
   ps < ifelse(ps == 1, 1 - ((2*ghs_model$posterior_draws)^-1), ps)
   ps_sorted <- sort(ps, decreasing = T)
+  phi <- 0 
   for (i in 1:length(ps_sorted)){
     if(mean(1-ps_sorted[1:i]) <= alpha){ 
       next
@@ -17,12 +18,20 @@ bayesian_variable_selection <- function(ghs_model, alpha, delta = NULL){
       break
     }
   }
-  
   choices_idx <- which(ps >= phi)
   choices[choices_idx] <- 1 
   
   return(choices)
-  
+}
+
+inclusion_weight_selection <- function(ghs_model){
+  choices <- rep(0,choose(ghs_model$real_dat$p,2))
+  tau2 <- mean(ghs_model$posterior_draws_tau)
+  connection_specific <- rowMeans(ghs$posterior_draws_lam)*rowMeans(ghs$posterior_draws_gam)
+  w <- i / (1 + connection_specific*tau2)
+  d <- which(w > 0.5)
+  choices[d] <- 1 
+  return(choices)
 }
 
 summarize_ghs_metrics <- function(ghs_model, fdr = 0.05){
@@ -129,22 +138,7 @@ compare_ghp <- function(ghs_model,comparison = "lm", nodes = F, delta = NULL, al
     mse_comparison <- sum((real_betas - comparison_mod$posterior_pe)^2) / q
     mse_comparison_s <- sum((real_betas[signals] - comparison_coefficients[signals])^2) / sum(signals)
     mse_comparison_z <- sum((real_betas[!signals] - comparison_coefficients[!signals])^2) / sum(!signals)
-    # comparison_choices <- rep(0,q)
-    # comparison_ps <- rowMeans(abs(comparison_mod$posterior_draws_beta) > delta)
-    # comparison_ps < ifelse(comparison_ps == 1, 1 - ((2*comparison_mod$posterior_draws)^-1), comparison_ps)
-    # comparison_ps_sorted <- sort(comparison_ps, decreasing = T)
-    # for (i in 1:length(comparison_ps_sorted)){
-    #   if(mean(1-comparison_ps_sorted[1:i]) <= alpha){ 
-    #     next
-    #   } else{
-    #     phi = comparison_ps_sorted[i-1]
-    #     break
-    #   }
-    # }
-    # 
-    # comparison_choices_idx <- which(comparison_ps >= phi)
-    # comparison_choices[comparison_choices_idx] <- 1 
-    comparison_choices <- bayesian_variable_selection(comparison_mod, delta, alpha)
+    comparison_choices <- inclusion_weight_selection(comparison_mod, alpha)
     comparison_accuracy = sum(comparison_choices == comparison_mod$real_dat$signal$signal)/ q
     comparison_sens = sum(comparison_choices[signals] == 1)/ sum(signals)
     comparison_spec = sum(comparison_choices[!signals] == 0)/ sum(!signals)
@@ -154,6 +148,18 @@ compare_ghp <- function(ghs_model,comparison = "lm", nodes = F, delta = NULL, al
   
  
   print("GHP")
+  
+  ghp_coefficients <- ghs_model$posterior_pe
+  
+  mse_ghp <- sum((real_betas - ghp_coefficients)^2) / q
+  mse_ghp_s <- sum((real_betas[signals] - ghp_coefficients[signals])^2) / sum(signals)
+  mse_ghp_z <- sum((real_betas[!signals] - ghp_coefficients[!signals])^2) / sum(!signals)
+  ghp_choices <- inclusion_weight_selection(ghs_model,alpha)
+  ghp_accuracy = sum(ghp_choices == ghs_model$real_dat$signal$signal)/ q
+  ghp_sens = sum(ghp_choices[signals] == 1)/ sum(signals)
+  ghp_spec = sum(ghp_choices[!signals] == 0)/ sum(!signals)
+  ghp_preds <- ghs_model$predictions
+  pred_error_ghp <- sum((y_true - ghp_preds)^2) / n
   
   #return(return_dat)
   
