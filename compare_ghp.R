@@ -28,7 +28,7 @@ inclusion_weight_selection <- function(ghs_model){
   choices <- rep(0,choose(ghs_model$real_dat$p,2))
   tau2 <- mean(ghs_model$posterior_draws_tau)
   connection_specific <- rowMeans(ghs$posterior_draws_lam)*rowMeans(ghs$posterior_draws_gam)
-  w <- i / (1 + connection_specific*tau2)
+  w <- 1 - (1 / (1 + connection_specific*tau2))
   d <- which(w > 0.5)
   choices[d] <- 1 
   return(choices)
